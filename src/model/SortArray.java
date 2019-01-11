@@ -6,18 +6,19 @@ import java.util.Random;
 
 public class SortArray extends JPanel {
 
-    private int[] array = new int[SortVisualiser.BARS];
-    private boolean[] color = new boolean[SortVisualiser.BARS];
+    private long SLEEP_TIME = 5;
 
-    public SortArray() {
-        fillArray();
-        shuffleElements();
-        setOpaque(true);
-        setBackground(Color.DARK_GRAY);
+    public long getSleep() {
+        return SLEEP_TIME;
     }
 
-    public void updateArray() {
-        shuffleElements();
+    private int[] array = new int[SortVisualizer.BARS];
+    private boolean[] color = new boolean[SortVisualizer.BARS];
+
+    public SortArray() {
+        setOpaque(true);
+        setBackground(Color.DARK_GRAY);
+        fillArray();
     }
 
     private void fillArray() {
@@ -26,14 +27,25 @@ public class SortArray extends JPanel {
         }
     }
 
-    private void shuffleElements() {
+    public void shuffleElements() {
+        try {
+            SortVisualizer.SEMAPHORE.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         Random random = new Random();
         for (int i = array.length - 1; i >= 0; i--) {
             int index = random.nextInt(i + 1);
             int temp = array[i];
             array[i] = array[index];
             array[index] = temp;
+            repaint();
+            color[i] = true;
+            repaint();
+            sleep(5);
         }
+        SortVisualizer.SEMAPHORE.release();
     }
 
     public void swap(int firstIndex, int secondIndex) {
@@ -49,8 +61,9 @@ public class SortArray extends JPanel {
         array[firstIndex] = array[secondIndex];
         array[secondIndex] = temp;
         color[secondIndex] = true;
+        color[firstIndex] = true;
         repaint();
-        sleep(5);
+        sleep(SLEEP_TIME);
     }
 
     private void sleep(long ms) {
@@ -68,14 +81,14 @@ public class SortArray extends JPanel {
 
     public int get(int index) {
         if (index < 0 || index >= array.length) {
-            throw new IllegalArgumentException("Illegal index" + index + " array's length=" + array.length);
+            throw new IllegalArgumentException("Illegal index=" + index + " array's length=" + array.length);
         }
         return array[index];
     }
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(SortVisualiser.WIDTH, SortVisualiser.HEIGHT);
+        return new Dimension(SortVisualizer.WIDTH, SortVisualizer.HEIGHT);
     }
 
     @Override
@@ -83,17 +96,24 @@ public class SortArray extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
 
-        for (int x = 0; x < SortVisualiser.BARS; x++) {
+        for (int x = 0; x < SortVisualizer.BARS; x++) {
             g2.setColor(Color.WHITE);
-            int begX = x + (SortVisualiser.BARS_LENGTH - 1) * x;
-            int begY = SortVisualiser.HEIGHT - array[x] - 24;
+            int begX = x + (SortVisualizer.BARS_LENGTH - 1) * x;
+            int begY = SortVisualizer.HEIGHT - array[x] - 24;
 
             if (color[x]) {
                 g2.setColor(Color.RED);
                 color[x] = false;
             }
 
-            g2.fillRect(begX, begY, SortVisualiser.BARS_LENGTH, array[x]);
+            g2.fillRect(begX, begY, SortVisualizer.BARS_LENGTH, array[x]);
         }
+    }
+
+    public void setSleepTime(long sleepTime) {
+        if (sleepTime < 1 || sleepTime > 100) {
+            throw new IllegalArgumentException("Illegal amount of milliseconds=" + sleepTime);
+        }
+        SLEEP_TIME = sleepTime;
     }
 }
