@@ -8,10 +8,6 @@ public class SortArray extends JPanel {
 
     private long SLEEP_TIME = 5;
 
-    public long getSleep() {
-        return SLEEP_TIME;
-    }
-
     private int[] array = new int[SortVisualizer.BARS];
     private boolean[] color = new boolean[SortVisualizer.BARS];
 
@@ -23,7 +19,7 @@ public class SortArray extends JPanel {
 
     private void fillArray() {
         for (int i = 0; i < array.length; i++) {
-            array[i] = i;
+            array[i] = i + 1;
         }
     }
 
@@ -66,13 +62,19 @@ public class SortArray extends JPanel {
         sleep(SLEEP_TIME);
     }
 
+    public void update(int index, int elem) {
+        array[index] = elem;
+        color[index] = true;
+        repaint();
+        sleep(SLEEP_TIME);
+    }
+
     private void sleep(long ms) {
-        long nanos = ms * (long)1e6;
-        long startTime = System.nanoTime();
-        long elapsedTime;
-        do {
-            elapsedTime = System.nanoTime() - startTime;
-        } while (elapsedTime < nanos);
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     public int length() {
