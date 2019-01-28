@@ -1,7 +1,7 @@
-# Simple
+# Simple Sort Visualization
 Simple implementation of sorts visualization using Java/Swing.
 
-## Sorts:
+## Sorts
 * Insertion
 * Selection
 * Bubble
