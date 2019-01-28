@@ -2,6 +2,7 @@ package model;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Random;
 
 public class SortArray extends JPanel {
@@ -15,6 +16,10 @@ public class SortArray extends JPanel {
         setOpaque(true);
         setBackground(Color.DARK_GRAY);
         fillArray();
+    }
+
+    public int[] copy(int startIndex, int endIndex) {
+        return Arrays.copyOfRange(array, startIndex, endIndex + 1);
     }
 
     private void fillArray() {
@@ -41,6 +46,7 @@ public class SortArray extends JPanel {
             repaint();
             sleep(5);
         }
+
         SortVisualizer.SEMAPHORE.release();
     }
 
@@ -62,7 +68,7 @@ public class SortArray extends JPanel {
         sleep(SLEEP_TIME);
     }
 
-    public void update(int index, int elem) {
+    public void updateSingleElement(int index, int elem) {
         array[index] = elem;
         color[index] = true;
         repaint();
@@ -107,7 +113,6 @@ public class SortArray extends JPanel {
                 g2.setColor(Color.RED);
                 color[x] = false;
             }
-
             g2.fillRect(begX, begY, SortVisualizer.BARS_LENGTH, array[x]);
         }
     }

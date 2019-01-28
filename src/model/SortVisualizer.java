@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
-public class SortVisualizer extends JFrame{
+public class SortVisualizer extends JFrame {
 
     public final static int WIDTH = 1280;
     public final static int HEIGHT = 720;
@@ -18,23 +18,31 @@ public class SortVisualizer extends JFrame{
     public final static Semaphore SEMAPHORE = new Semaphore(1);
     private final static SortArray array = new SortArray();
     private final static Map<String, ISort> sorts = new HashMap<>();
+
     {
         sorts.put("BubbleSort", new BubbleSort());
         sorts.put("InsertionSort", new InsertionSort());
         sorts.put("QuickSort", new QuickSort());
-        sorts.put("MergeSort", new MergeSort());
+        sorts.put("MergeSortRec", new RecursiveMergeSort());
+        sorts.put("MergeSortItr", new IterativeMergeSort());
+        sorts.put("SelectionSort", new SelectionSort());
+        sorts.put("ShellSort", new ShellSort());
     }
 
     private JMenuBar menuBar = new JMenuBar();
     private JMenu sortMenu = new JMenu("Sorts");
+    private JMenu sleepTimeMenu = new JMenu("Sleep time");
+
+    private ButtonGroup sleepTimeGroup = new ButtonGroup();
 
     private JMenuItem bubbleSort = new JMenuItem("Bubble sort");
     private JMenuItem insertionSort = new JMenuItem("Insertion sort");
     private JMenuItem quickSort = new JMenuItem("Quick sort");
-    private JMenuItem mergeSort = new JMenuItem("Merge Sort");
+    private JMenuItem mergeSortRec = new JMenuItem("Recursive Merge Sort");
+    private JMenuItem mergeSortItr = new JMenuItem("Iterative Merge Sort");
+    private JMenuItem selectionSort = new JMenuItem("Selection Sort");
+    private JMenuItem shellSort = new JMenuItem("Shell Sort");
 
-    private JMenu sleepTimeMenu = new JMenu("Sleep time");
-    private ButtonGroup sleepTimeGroup = new ButtonGroup();
 
     public SortVisualizer(String title) {
         super(title);
@@ -44,33 +52,72 @@ public class SortVisualizer extends JFrame{
         sortMenu.add(bubbleSort);
         bubbleSort.addActionListener(e ->
                 new Thread(() -> {
-                    array.shuffleElements();
-                    sorts.get("BubbleSort").sort(array);
-        }).start());
+                    if (SEMAPHORE.availablePermits() == 1) {
+                        array.shuffleElements();
+                        sorts.get("BubbleSort").sort(array);
+                    }
+                }).start());
 
         sortMenu.add(insertionSort);
         insertionSort.addActionListener(e ->
                 new Thread(() -> {
-                    array.shuffleElements();
-                    sorts.get("InsertionSort").sort(array);
-        }).start());
+                    if (SEMAPHORE.availablePermits() == 1) {
+                        array.shuffleElements();
+                        sorts.get("InsertionSort").sort(array);
+                    }
+                }).start());
 
         sortMenu.add(quickSort);
         quickSort.addActionListener(e ->
                 new Thread(() -> {
-                    array.shuffleElements();
-                    sorts.get("QuickSort").sort(array);
-        }).start());
+                    if (SEMAPHORE.availablePermits() == 1) {
+                        array.shuffleElements();
+                        sorts.get("QuickSort").sort(array);
+                    }
+                }).start());
 
-        sortMenu.add(mergeSort);
-        mergeSort.addActionListener(e ->
+        sortMenu.add(mergeSortRec);
+        mergeSortRec.addActionListener(e ->
                 new Thread(() -> {
-                    array.shuffleElements();
-                    sorts.get("MergeSort").sort(array);
-        }).start());
+                    if (SEMAPHORE.availablePermits() == 1) {
+                        array.shuffleElements();
+                        sorts.get("MergeSortRec").sort(array);
+                    }
+                }).start());
 
+        sortMenu.add(mergeSortItr);
+        mergeSortItr.addActionListener(e ->
+                new Thread(() -> {
+                    if (SEMAPHORE.availablePermits() == 1) {
+                        array.shuffleElements();
+                        sorts.get("MergeSortItr").sort(array);
+                    }
+                }).start());
+
+        sortMenu.add(selectionSort);
+        selectionSort.addActionListener(e ->
+                new Thread(() -> {
+                    if (SEMAPHORE.availablePermits() == 1) {
+                        array.shuffleElements();
+                        sorts.get("SelectionSort").sort(array);
+                    }
+                }).start());
+
+        sortMenu.add(shellSort);
+        shellSort.addActionListener(e ->
+                new Thread(() -> {
+                    if (SEMAPHORE.availablePermits() == 1) {
+                        array.shuffleElements();
+                        sorts.get("ShellSort").sort(array);
+                    }
+                }).start());
 
         String time = "ms";
+        JRadioButton sleepTime1 = new JRadioButton("1 " + time);
+        sleepTime1.addActionListener(e -> array.setSleepTime(1));
+        sleepTimeGroup.add(sleepTime1);
+        sleepTimeMenu.add(sleepTime1);
+
         JRadioButton sleepTime3 = new JRadioButton("3 " + time);
         sleepTime3.addActionListener(e -> array.setSleepTime(3));
         sleepTimeGroup.add(sleepTime3);
