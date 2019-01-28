@@ -12,5 +12,5 @@ Simple implementation of sorts visualization using Java/Swing.
 
 ## Acknowledgments
 ```
-Inspired by: https://www.youtube.com/watch?v=6haL-aiE21w&t=25s
+[Inspired by Hopson](https://www.youtube.com/watch?v=6haL-aiE21w&t=25s)
 ```
