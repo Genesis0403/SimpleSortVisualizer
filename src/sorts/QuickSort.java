@@ -13,34 +13,30 @@ public class QuickSort implements ISort {
             e.printStackTrace();
         }
 
-        quickSort(array, 0, array.length() - 1);
+        qSort(array, 0, array.length() - 1);
 
         SortVisualizer.SEMAPHORE.release();
     }
 
-    private void quickSort(SortArray array, int begIndex, int endIndex) {
-        int left = begIndex;
-        int right = endIndex;
-        int vel = array.get((left + right) / 2);
-        while (left <= right) {
-            while (array.get(left) < vel) {
-                left++;
-            }
-            while (array.get(right) > vel) {
-                right--;
-            }
-            if (left <= right) {
-                array.swap(left, right);
-                left++;
-                right--;
-            }
-        }
+    private void qSort(SortArray array, int lo, int hi) {
+        if (hi <= lo) return;
+        int mid = partition(array, lo, hi);
+        qSort(array, lo, mid - 1);
+        qSort(array, mid + 1, hi);
+    }
 
-        if (left < endIndex) {
-            quickSort(array, left, endIndex);
+    private int partition(SortArray array, int lo, int hi) {
+        int i = lo;
+        int j = hi + 1;
+        int mid = array.get(lo);
+        while (true) {
+            while (array.get(++i) <= mid) if (i >= hi) break;
+            while (array.get(--j) > mid); //  if (j <= lo) break
+
+            if (i >= j) break;
+            array.swap(i, j);
         }
-        if (right > begIndex) {
-            quickSort(array, begIndex, right);
-        }
+        array.swap(lo, j);
+        return j;
     }
 }
